@@ -76,7 +76,7 @@ def cretae_py():
             f.write('')
         a = 0
 
-def api_for_main(req :Request,models: str = "ygo7",speaker_id:int=0,text: str = "",escape:bool=False,type: str = "",raw_text: str = "",output:str=""):
+def api_for_main(req :Request,models: str = def_model,speaker_id:int=0,text: str = "",escape:bool=False,type: str = "",raw_text: str = "",output:str=""):
     s = time.time()
     # 载入模型信息
     if models == "":
@@ -163,7 +163,7 @@ app.mount("/static",StaticFiles(directory="./static"),name="static")
 
 @app.get("/")
 def read_root(req :Request):
-    return template.TemplateResponse("index.html",context={"request":req})
+    return template.TemplateResponse("index.html",context={"request":req,"models":models,"enumerate":enumerate})
 
 class Item(BaseModel):
     model:Optional[str] = def_model
