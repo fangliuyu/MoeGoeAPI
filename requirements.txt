@@ -1,10 +1,11 @@
+cmake
+cython
 numba
 librosa
 numpy==1.22.0
 scipy
 torch
 unidecode
-openjtalk>=0.3.0.dev2
 jamo
 pypinyin
 jieba
@@ -17,3 +18,9 @@ indic_transliteration
 num_thai
 opencc
 audonnx
+
+openjtalk==0.3.0.dev1
+
+fastapi
+uvicorn
+python-multipart

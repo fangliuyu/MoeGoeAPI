@@ -1,0 +1,266 @@
+<html>
+
+<head>
+    <meta name="viewport" content="width=device-width">
+    <title>dev</title>
+    <link rel="alternate icon" class="js-site-favicon" type="image/png"
+        href="https://github.githubassets.com/favicons/favicon.png">
+</head>
+
+<body>
+    <div>
+        <table style="width: max-content;" align="center">
+            <form action="/dev/main" method="post" name="item">
+                <tr>
+                    <td>
+                        <table width="100%" border='1'>
+                            <tr>
+                                <td width="30%">
+                                    <label>
+                                        <span class="svelte-1l2rj76">模型</span>
+                                        <select name="model" class="svelte-1bhvxvb" width="max-content">
+                                            {% for modelname in models %}
+                                            {% if modelname == item.model %}
+                                            <option value={{modelname}} selected="selected">{{modelname}}</option>
+                                            {% else %}
+                                            <option value={{modelname}}>{{modelname}}</option>
+                                            {% endif %}
+                                            {% endfor %}
+                                        </select>
+                                        <button type="submit" name="switch" value="Submit">切换</button>
+                                    </label>
+                                </td>
+                                <td>
+                                    <label>
+                                        <span class="svelte-1l2rj76">角色</span>
+                                        <select name="speaker" class="svelte-1bhvxvb" width="max-content">
+                                            {% for speaker in models[item.model] %}
+                                            {% if speaker == item.speaker %}
+                                            <option value={{speaker}} selected="selected">{{speaker}}</option>
+                                            {% else %}
+                                            <option value={{speaker}}>{{speaker}}</option>
+                                            {% endif %}
+                                            {% endfor%}
+                                        </select>
+                                        <button type="submit" name="switch" value="Submit">刷新</button>
+                                    </label>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <table width="100%" border='1'>
+                            <tr>
+                                <td>
+                                    <div align="center">
+                                        <a target="_blank">
+                                            <strong>{{item.speaker}}</strong>
+                                        </a><br />
+                                        {% if item.url_pic == True %}
+                                            <img style="width:auto;height:300px;" src={{ url_for('static',path="/img/"+item.model+"/"+item.speaker+".png") }}>
+                                        {% else %}
+                                            <img style="width:auto;height:300px;" src={{ url_for('static',path='/img/1.png') }}>
+                                        {% endif %}
+                                    </div>
+                                </td>
+                                <td>
+                                    <table style="height: max-content;width: max-content;">
+                                        <tr>
+                                            <td>
+                                                <textarea name="text" rows="5" cols="50"
+                                                    placeholder="文本 (100字上限)">{{item.text}}</textarea>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <label>
+                                                    <span class="svelte-1l2rj76">语言</span><br />
+                                                    <select name="language" id="language" class="svelte-1bhvxvb">
+                                                        {% if item.language == "日语" %}
+                                                        <option value="中文">中文</option>
+                                                        <option value="日语" selected="selected">日语</option>
+                                                        <option value="中日混合">中日混合(中文用[ZH][ZH]包裹起来，日文用[JA][JA]包裹起来)
+                                                        </option>
+                                                        {% elif item.language == "中日混合" %}
+                                                        <option value="中文">中文</option>
+                                                        <option value="日语">日语</option>
+                                                        <option value="中日混合" selected="selected">
+                                                            中日混合(中文用[ZH][ZH]包裹起来，日文用[JA][JA]包裹起来)</option>
+                                                        {% else %}
+                                                        <option value="中文" selected="selected">中文</option>
+                                                        <option value="日语">日语</option>
+                                                        <option value="中日混合">中日混合(中文用[ZH][ZH]包裹起来，日文用[JA][JA]包裹起来)
+                                                        </option>
+                                                        {% endif %}
+                                                    </select>
+                                                </label>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <div>
+                                                    <div class="wrap svelte-gbyarh">
+                                                        <div class="head svelte-gbyarh">
+                                                            <label for="range_id_0">
+                                                                <span id="noise_scale_text"
+                                                                    class="svelte-1l2rj76">控制感情变化程度(noise_scale)</span>
+                                                            </label>
+                                                            <input id="noise_scale" type="number" min="0.1" max="1"
+                                                                step="0.1" class="svelte-gbyarh"
+                                                                placeholder={{item.noise_scale}}>
+                                                        </div>
+                                                    </div>
+                                                    <input name="noise_scale" type="range" style="width: 80%;"
+                                                        id="range_id_0" name="cowbell" min="0.1" max="1" step="0.1"
+                                                        class="svelte-gbyarh" value={{item.noise_scale}}>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <div>
+                                                    <div class="wrap svelte-gbyarh">
+                                                        <div class="head svelte-gbyarh">
+                                                            <label for="range_id_1">
+                                                                <span id="noise_scale_w_text"
+                                                                    class="svelte-1l2rj76">控制音素发音长度(noise_scale_w)</span>
+                                                            </label>
+                                                            <input id="noise_scale_w" type="number" min="0.1" max="1"
+                                                                step="0.1" class="svelte-gbyarh"
+                                                                placeholder={{item.noise_scale_w}}>
+                                                        </div>
+                                                    </div>
+                                                    <input name="noise_scale_w" type="range" style="width: 80%;"
+                                                        id="range_id_1" name="cowbell" min="0.1" max="1" step="0.1"
+                                                        class="svelte-gbyarh" value={{item.noise_scale_w}}>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <div>
+                                                    <div class="wrap svelte-gbyarh">
+                                                        <div class="head svelte-gbyarh">
+                                                            <label for="range_id_2">
+                                                                <span id="length_scale_text" class="svelte-1l2rj76"
+                                                                    title={{length_scale}}>控制整体语速(length_scale)</span>
+                                                            </label>
+                                                            <input id="length_scale" type="number" min="0.1" max="2"
+                                                                step="0.1" class="svelte-gbyarh"
+                                                                placeholder={{item.length_scale}}>
+                                                        </div>
+                                                    </div>
+                                                    <input name="length_scale" type="range" style="width: 80%;"
+                                                        id="range_id_2" name="cowbell" min="0.1" max="2" step="0.1"
+                                                        class="svelte-gbyarh" value={{item.length_scale}}>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <button style="width: 100%;height: 50;" id="component-17" name="switch"
+                                                    value="Create">生成</button>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                    <script type="text/javascript" charset="utf-8">
+                                        let noise_scale_input = document.getElementById("noise_scale")
+                                        let noise_scale_range = document.getElementById("range_id_0")
+
+                                        noise_scale_range.addEventListener("click", function (e) {
+                                            noise_scale_input.value = noise_scale_range.value
+                                        })
+                                        noise_scale_input.addEventListener("click", function (e) {
+                                            noise_scale_range.value = noise_scale_input.value
+                                        })
+
+                                        let noise_scale_w_input = document.getElementById("noise_scale_w")
+                                        let noise_scale_w_range = document.getElementById("range_id_1")
+
+                                        noise_scale_w_range.addEventListener("click", function (e) {
+                                            noise_scale_w_input.value = noise_scale_w_range.value
+                                        })
+                                        noise_scale_w_input.addEventListener("click", function (e) {
+                                            noise_scale_w_range.value = noise_scale_w_input.value
+                                        })
+
+
+                                        let length_scale_input = document.getElementById("length_scale")
+                                        let length_scale_range = document.getElementById("range_id_2")
+                                        length_scale_range.addEventListener("click", function (e) {
+                                            length_scale_input.value = length_scale_range.value
+                                        })
+                                        length_scale_input.addEventListener("click", function (e) {
+                                            length_scale_range.value = length_scale_input.value
+                                        })
+                                    </script>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+            </form>
+            <tr>
+                <td>
+                    <table style="height: max-content;width: fix-content;">
+                        <tr>
+                            <td>
+                                输出音频<br />
+                                <audio controls="" preload="metadata" src="data:audio/wav;base64,{{item.wavdata}}"
+                                    class="svelte-7brdsk">
+                                </audio>
+                            </td>
+                            <td>
+                                <table style="width: 100%;">
+                                    <tr>
+                                        <td>
+                                            输出文件名:<input style="width: fit-content;" id="filename" placeholder="输出文件名"
+                                                value={{item.speaker}}>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td align="center">
+                                            <button id="btn" class="lg secondary svelte-1ma3u5b"
+                                                style="width: 100%;height: 30;">下载音频</button>
+                                            <a id="btnToDownload" title="data:audio/x-wav;base64,{{item.wavdata}}"></a>
+                                            <script type="text/javascript" charset="utf-8">
+                                                var filename = document.getElementById("filename");
+                                                var btn = document.getElementById("btn");
+                                                var btnToDownload = document.getElementById("btnToDownload");
+                                                var base64data = btnToDownload.title;
+
+                                                btn.addEventListener("click", function (e) {
+                                                    var fname = filename.value + ".wav";
+                                                    let parts = base64data.split(';base64,');
+                                                    let contentType = parts[0].split(':')[1];
+                                                    let raw = window.atob(parts[1]);
+                                                    let rawLength = raw.length
+                                                    let u8Array = new Uint8Array(rawLength);
+
+                                                    for (let i = 0; i < rawLength; ++i) {
+                                                        u8Array[i] = raw.charCodeAt(i);
+                                                    }
+
+                                                    var blob = new Blob([u8Array], { type: contentType });
+                                                    console.log(blob);
+
+                                                    btnToDownload.href = URL.createObjectURL(blob);
+                                                    btnToDownload.download = fname;
+                                                    btnToDownload.click();
+                                                });
+                                            </script>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+        </table>
+    </div>
+</body>
+
+</html>

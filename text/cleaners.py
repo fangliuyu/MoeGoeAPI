@@ -1,4 +1,51 @@
 import re
+from unidecode import unidecode
+from phonemizer import phonemize
+from pypinyin import Style, pinyin
+from pypinyin.style._utils import get_finals, get_initials
+
+# Regular expression matching whitespace:
+_whitespace_re = re.compile(r'\s+')
+
+# List of (regular expression, replacement) pairs for abbreviations:
+_abbreviations = [(re.compile('\\b%s\\.' % x[0], re.IGNORECASE), x[1]) for x in [
+    ('mrs', 'misess'),
+    ('mr', 'mister'),
+    ('dr', 'doctor'),
+    ('st', 'saint'),
+    ('co', 'company'),
+    ('jr', 'junior'),
+    ('maj', 'major'),
+    ('gen', 'general'),
+    ('drs', 'doctors'),
+    ('rev', 'reverend'),
+    ('lt', 'lieutenant'),
+    ('hon', 'honorable'),
+    ('sgt', 'sergeant'),
+    ('capt', 'captain'),
+    ('esq', 'esquire'),
+    ('ltd', 'limited'),
+    ('col', 'colonel'),
+    ('ft', 'fort'),
+]]
+
+def english_cleaners(text):
+    text = unidecode(text)
+    text = text.lower()
+    for regex, replacement in _abbreviations:
+        text = re.sub(regex, replacement, text)
+    phonemes = phonemize(text, language='en-us', backend='espeak', strip=True)
+    return re.sub(_whitespace_re, ' ', phonemes)
+
+
+def english_cleaners2(text):
+    text = unidecode(text)
+    text = text.lower()
+    for regex, replacement in _abbreviations:
+        text = re.sub(regex, replacement, text)
+    phonemes = phonemize(text, language='en-us', backend='espeak', strip=True, preserve_punctuation=True,
+                         with_stress=True)
+    return re.sub(_whitespace_re, ' ', phonemes)
 
 
 def japanese_cleaners(text):
@@ -31,6 +78,28 @@ def chinese_cleaners(text):
     text = re.sub(r'([ˉˊˇˋ˙])$', r'\1。', text)
     return text
 
+def chinese_cleaners1(text):
+    from pypinyin import Style, pinyin
+    phones = [phone[0] for phone in pinyin(text, style=Style.TONE3)]
+    return ' '.join(phones)
+
+
+def chinese_cleaners2(text):
+    phones = [
+        p
+        for phone in pinyin(text, style=Style.TONE3)
+        for p in [
+            get_initials(phone[0], strict=True),
+            get_finals(phone[0][:-1], strict=True) + phone[0][-1]
+            if phone[0][-1].isdigit()
+            else get_finals(phone[0], strict=True)
+            if phone[0][-1].isalnum()
+            else phone[0],
+        ]
+        # Remove the case of individual tones as a phoneme
+        if len(p) != 0 and not p.isdigit()
+    ]
+    return phones
 
 def zh_ja_mixture_cleaners(text):
     from text.mandarin import chinese_to_romaji
