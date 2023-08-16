@@ -6,6 +6,7 @@ numpy==1.22.0
 scipy
 torch
 unidecode
+phonemizer
 jamo
 pypinyin
 jieba

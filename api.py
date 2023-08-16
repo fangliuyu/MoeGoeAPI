@@ -23,6 +23,17 @@ from text.symbols import symbols
 import time
 from loguru import logger
 
+import sys
+
+import argparse
+parser = argparse.ArgumentParser(description='argparse testing')
+parser.add_argument('--host','-g',type=str, default='127.0.0.1',help='host of the api')
+parser.add_argument('--port','-p',type=int, default=8000,help='port of the api')
+args = parser.parse_args()
+
+api_host = args.host
+api_port = args.port
+
 file_path = Path() / os.getcwd()
  
 models = {}
@@ -32,6 +43,9 @@ for file_name in os.listdir(file_path/Path("models")):
         hps = utils.get_hparams_from_file("./models"/Path(file_name)/"config.json")
         speakers = hps.speakers if 'speakers' in hps.keys() else ['single entity']
         models.update({file_name:speakers})
+if len(models) == 0:
+    print("没有任何模型,请在models文件夹里放入模型")
+    sys.exit() 
 def_model = next(iter(models))
 def_speakers = models.get(next(iter(models)))[0]
  
@@ -179,10 +193,19 @@ class Item(BaseModel):
 
 @app.get("/dev")
 async def devIndex(req :Request):
+    models = {}
+    for file_name in os.listdir(file_path/Path("models")):
+        if os.path.isdir(model_path/file_name):
+            hps = utils.get_hparams_from_file("./models"/Path(file_name)/"config.json")
+            speakers = hps.speakers if 'speakers' in hps.keys() else ['single entity']
+            models.update({file_name:speakers})
+    def_model = next(iter(models))
+    def_speakers = models.get(next(iter(models)))[0]
+    item = Item(model=def_model,speaker=def_speakers)
     return template.TemplateResponse("dev.html",context={
         "request":req,
         "models":models,
-        "item":Item(),
+        "item":item,
     })
 
 @app.post("/dev/main")
@@ -286,4 +309,4 @@ async def moegoe_for_N(req :Request,models: str="",id:int=0,text: str="",escape:
     return api_for_main(req,models,id,text,escape,type,raw_text,output)
 
 if __name__ == "__main__":
-    uvicorn.run(app='api:app',port=25565,reload=True)
+    uvicorn.run(app='api:app',host=api_host,port=api_port,reload=True)
