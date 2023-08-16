@@ -29,10 +29,13 @@ import argparse
 parser = argparse.ArgumentParser(description='argparse testing')
 parser.add_argument('--host','-g',type=str, default='127.0.0.1',help='host of the api')
 parser.add_argument('--port','-p',type=int, default=8000,help='port of the api')
+parser.add_argument('--static','-s',type=str, default='./static',help='File Path of the WAV File Saving')
+parser.add_argument('--template','-t',type=str, default='templates',help='File Path of the HTML File Loading')
 args = parser.parse_args()
-
 api_host = args.host
 api_port = args.port
+static_file_path = args.static
+template_file_path = args.template
 
 file_path = Path() / os.getcwd()
  
@@ -172,8 +175,8 @@ def api_for_main(req :Request,models: str = def_model,speaker_id:int=0,text: str
 
 
 app = FastAPI()
-template = Jinja2Templates("templates")
-app.mount("/static",StaticFiles(directory="./static"),name="static")
+template = Jinja2Templates(template_file_path)
+app.mount("/static",StaticFiles(directory=static_file_path),name="static")
 
 @app.get("/")
 def read_root(req :Request):
