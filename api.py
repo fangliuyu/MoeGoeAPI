@@ -169,7 +169,7 @@ def api_for_main(req :Request,models: str = def_model,speaker_id:int=0,text: str
                     return FileResponse(file_name)
                 
     except Exception as e:
-        return {"code":400,"message":str(e)}
+        return {"code":500,"message":str(e)}
 
 
 
