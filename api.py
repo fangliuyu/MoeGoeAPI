@@ -93,7 +93,7 @@ def cretae_py():
             f.write('')
         a = 0
 
-def api_for_main(req :Request,models: str = def_model,speaker_id:int=0,text: str = "",escape:bool=False,type: str = "",raw_text: str = "",output:str="test"):
+def api_for_main(req :Request,models: str = def_model,speaker_id:int=0,text: str = "",escape:bool=False,type: str = "json",raw_text: str = "",output:str=""):
     s = time.time()
     # 载入模型信息
     if models == "":
@@ -304,11 +304,11 @@ async def dev(req :Request,
     })
 
 @app.get("/{models}")
-async def moegoe_for_N(req :Request,models: str="",text: str="",escape:bool=False,type: str="wav",raw_text:str="",output:str="test"):
+async def moegoe_for_N(req :Request,models: str="",text: str="",escape:bool=False,type: str="json",raw_text:str="",output:str=""):
     return api_for_main(req,models,0,text,escape,type,raw_text,output)
 
 @app.get("/{models}/{id}")
-async def moegoe_for_N(req :Request,models: str="",id:int=0,text: str="",escape:bool=False,type: str="wav",raw_text:str="",output:str="test"):
+async def moegoe_for_N(req :Request,models: str="",id:int=0,text: str="",escape:bool=False,type: str="json",raw_text:str="",output:str=""):
     return api_for_main(req,models,id,text,escape,type,raw_text,output)
 
 if __name__ == "__main__":
